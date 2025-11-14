@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anna: Nossa Mega Aventurinha de 15 Níveis 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis e Design Rosa Fofo */
+        :root {
+            --primary-color: #ff69b4; /* Rosa Choque (Amor) */
+            --secondary-color: #dda0dd; /* Lilás Médio (Carinho) */
+            --bg-color: #ffe8f2; /* Rosa Pastel (Fundo) */
+            --card-color: #ffffff; /* Card Branco */
+            --text-color: #6a1b9a; /* Roxo Escuro */
+            --transition-speed: 0.5s;
+            --total-pages: 15; 
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden; 
+            text-align: center;
+        }
+
+        /* Estrutura SLIDE */
+        #page-container {
+            display: flex;
+            width: calc(100vw * var(--total-pages));
+            height: 100vh;
+            transition: transform var(--transition-speed) ease-in-out;
+            transform: translateX(0); 
+        }
+
+        section {
+            width: 100vw;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            background: var(--bg-color);
+        }
+
+        .content-card {
+            background: var(--card-color);
+            padding: 40px;
+            border-radius: 25px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 90%;
+            border: 3px solid var(--secondary-color);
+            position: relative;
+            z-index: 10; 
+        }
+
+        /* Tipografia */
+        h1, h2 {
+            font-family: 'Pacifico', cursive; 
+            color: var(--primary-color);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        h2 { font-size: 2.2em; }
+
+        /* Botões */
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap; 
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50px; 
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .btn.interativo { background: var(--primary-color); }
+        .btn:hover { transform: scale(1.05); }
+
+        /* Mídia */
+        video, img {
+            max-width: 90%;
+            max-height: 40vh;
+            object-fit: contain;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 4px solid var(--primary-color); 
+        }
+
+        /* Album de Fotos */
+        .photo-album {
+            display: flex;
+            overflow-x: scroll;
+            gap: 15px;
+            padding: 10px 0;
+            max-width: 90%;
+        }
+        .photo-album img { min-width: 150px; height: 120px; object-fit: cover; }
+
+        /* Indicadores */
+        .revealed { margin-top: 15px; display: none; font-weight: bold; }
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 8px; background: var(--primary-color); width: 0%; transition: width var(--transition-speed) ease-in-out; z-index: 1000;
+        }
+        #level-indicator {
+            position: fixed; top: 8px; right: 15px; background: var(--secondary-color); padding: 5px 10px; border-radius: 0 0 15px 15px; font-weight: 700; color: white; z-index: 1001;
+        }
+        
+        /* CSS para o URSINHO FOFO nos cantos */
+        .bear {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            background: #ffc0cb; /* Corpo Rosa Claro */
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .bear::before, .bear::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffc0cb; 
+            border-radius: 50%;
+            top: -5px;
+        }
+        .bear::before { left: -5px; } /* Orelha Esquerda */
+        .bear::after { right: -5px; } /* Orelha Direita */
+        
+        /* Posições dos Ursos */
+        #bear-tl { top: 20px; left: 20px; transform: rotate(-10deg); } /* Topo Esquerdo */
+        #bear-br { bottom: 20px; right: 20px; transform: rotate(10deg); } /* Baixo Direito */
+        #bear-bl { bottom: 20px; left: 20px; transform: scaleX(-1) rotate(10deg); } /* Baixo Esquerdo (espelhado) */
+
+    </style>
+</head>
+<body>
+
+    <div class="bear" id="bear-tl"></div>
+    <div class="bear" id="bear-br"></div>
+    <div class="bear" id="bear-bl"></div>
+
+    <div id="progress-bar"></div>
+    <div id="level-indicator">Nível 1 / 15</div>
+
+    <div id="page-container">
+
+        <section id="pag1">
+            <div class="content-card">
+                <h1>💖 Bem-Vinda à Nossa Mega Aventurinha, Anna! 💖</h1>
+                <p>Prepare-se, minha **bebezuda**! Esta é a nossa jornada de **15 Níveis** interativos, recheada de amor e desafios fofos!</p>
+                <button class="btn" onclick="mudarPagina(1, 2)">Iniciar a Diversão! ✨</button>
+            </div>
+        </section>
+
+        <section id="pag2">
+            <div class="content-card">
+                <h2>&#128148; Nível 2: O Abraço do Perdão</h2>
+                <p>Eu sei que errei e sinto muito, **neném**. Seu perdão é a chave para os próximos 13 níveis.</p>
+                <button class="btn interativo" id="btn-perdao" onclick="aceitarPerdao()">Aceitar o Pedido de Desculpas! </button>
+                <p class="revealed" id="perdao-status" style="color: var(--secondary-color);">&#10084; Perdão aceito! Seu amor me guia! &#10084;</p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(2, 1)">&#9664; Voltar</button>
+                    <button class="btn" id="btn-prox-2" onclick="mudarPagina(2, 3)" disabled>Próxima Memória &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag3">
+            <div class="content-card">
+                <h2>&#127881; Nível 3: O Som da Felicidade &#127881;</h2>
+                <p>Aquele som que eu amo: sua risada mais alta e feliz, **minha gatinha**!</p>
+                <video controls src="VIDEO_UHULLL_RISO.mp4" poster="PREVIEW_VIDEO_UHULLL.jpg"></video>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(3, 2)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(3, 4)">Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag4">
+            <div class="content-card">
+                <h2>&#127918; Nível 4: Nosso Álbum Fofo (5 Fotos Máx)</h2>
+                <p>Cinco dos nossos momentos mais engraçados e fofos. Role para o lado e lembre-se, **neném**.</p>
+                <div class="photo-album">
+                    <img src="SEU_PRINT_DE_FOTO_AQUI_01.png" alt="Print/Foto 1" />
+                    <img src="SEU_PRINT_DE_FOTO_AQUI_02.png" alt="Print/Foto 2" />
+                    <img src="SEU_PRINT_DE_FOTO_AQUI_03.png" alt="Print/Foto 3" />
+                    <img src="SEU_PRINT_DE_FOTO_AQUI_04.png" alt="Print/Foto 4" />
+                    <img src="SEU_PRINT_DE_FOTO_AQUI_05.png" alt="Print/Foto 5" />
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(4, 3)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(4, 5)">Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag5">
+            <div class="content-card">
+                <h2>&#9835; Nível 5: A Melodia do Meu Coração &#9835;</h2>
+                <p>A canção mais doce que já ouvi. Continue cantando para mim, **minha gatinha**.</p>
+                <video controls src="VIDEO_CANTANDO.mp4" poster="PREVIEW_VIDEO_CANTANDO.jpg"></video>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(5, 4)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(5, 6)">Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag6">
+            <div class="content-card">
+                <h2>&#127918; Nível 6: O Nosso Campo de Batalha</h2>
+                <p>Qual é o meu jogo favorito? (Onde mais gasto meu tempo com você, **neném**?)</p>
+                <div class="nav-buttons">
+                    <button class="btn interativo" onclick="responderQuizEscolha('Roblox', 'Valorant', 6)">Roblox</button>
+                    <button class="btn interativo" onclick="responderQuizEscolha('Valorant', 'Valorant', 6)">Valorant</button>
+                </div>
+                <p class="revealed" id="quiz-status-6" style="color: var(--secondary-color);"></p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(6, 5)">&#9664; Voltar</button>
+                    <button class="btn" id="btn-prox-6" onclick="mudarPagina(6, 7)" disabled>Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag7">
+            <div class="content-card">
+                <h2>&#128172; Nível 7: A Frase de LS</h2>
+                <p>Depois de uma jogada boa, o que o "LS" (eu) costuma dizer? (Pense bem, **bebezuda**!)</p>
+                <div class="nav-buttons">
+                    <button class="btn interativo" onclick="responderQuizEscolha('Joguei muito', 'Pego muito leve', 7)">Joguei muito</button>
+                    <button class="btn interativo" onclick="responderQuizEscolha('Pego muito leve', 'Pego muito leve', 7)">Pego muito leve</button>
+                </div>
+                <p class="revealed" id="quiz-status-7" style="color: var(--secondary-color);"></p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(7, 6)">&#9664; Voltar</button>
+                    <button class="btn" id="btn-prox-7" onclick="mudarPagina(7, 8)" disabled>Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag8">
+            <div class="content-card">
+                <h2>&#128147; Nível 8: O Jogo da Lealdade</h2>
+                <p>Quem é o seu amor eterno e parceiro? (Escolha com o coração, **bebezuda**!)</p>
+                <div class="nav-buttons">
+                    <button class="btn interativo" onclick="responderLealdade(true, 8)">PAPAI 1 (eu)</button>
+                    <button class="btn interativo" onclick="responderLealdade(false, 8)">PAPAI 2 (seu pai de sangue)</button>
+                </div>
+                <p class="revealed" id="quiz-status-8" style="color: var(--primary-color); font-weight: bold;"></p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(8, 7)">&#9664; Voltar</button>
+                    <button class="btn" id="btn-prox-8" onclick="mudarPagina(8, 9)" disabled>Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag9">
+            <div class="content-card">
+                <h2>&#10084; Nível 9: Só Queria Dizer...</h2>
+                <p style="font-size: 1.2em; color: var(--text-color);">Você me faz sentir completo de um jeito que eu nunca imaginei ser possível. Você é meu lar, eu te amo minha gordinha bunduda.</p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(9, 8)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(9, 10)">Avançar no Coração &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag10">
+            <div class="content-card">
+                <h2>&#127909; Nível 10: Nosso Momento Aleatório</h2>
+                <p>Lembra desse dia? 2 porquinho dançando bem cutes !</p>
+                <video controls src="VIDEO_MOMENTO_ESPECIAL.mp4" poster="PREVIEW_MOMENTO_ESPECIAL.jpg"></video>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(10, 9)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(10, 11)">Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="pag11">
+            <div class="content-card">
+                <h2>&#128151; Nível 11: Eu te prometo...</h2>
+                <p style="font-size: 1.2em; color: var(--text-color);">Prometo sempre ser seu porto seguro e sua melhor diversão. Eu te amo, **bebezuda**!</p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(11, 10)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(11, 12)">Avançar &#9654;</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="pag12">
+            <div class="content-card">
+                <h2>&#127873; Nível 12: O Tesouro do Tempo (Dia)</h2>
+                <p>Qual o **dia** do meu aniversário? (Do seu namorado!)</p>
+                <input type="number" id="quiz-dia" min="1" max="31" placeholder="Dia: 31" style="width: 80px; text-align: center;" />
+                <button class="btn interativo" onclick="verificarDia(12)">Verificar Dia</button>
+                <p class="revealed" id="quiz-status-12" style="color: var(--secondary-color);"></p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(12, 11)">&#9664; Voltar</button>
+                    <button class="btn" id="btn-prox-12" onclick="mudarPagina(12, 13)" disabled>Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag13">
+            <div class="content-card">
+                <h2>&#127873; Nível 13: A Chave Completa</h2>
+                <p>Agora, me diga o **mês e o ano** completo do meu aniversário. (DD/MM/AAAA)</p>
+                <input type="text" id="quiz-aniversario" placeholder="31/03/2005" style="width: 150px; text-align: center;" />
+                <button class="btn interativo" onclick="verificarAniversario(13)">Destravar</button>
+                <p class="revealed" id="quiz-status-13" style="color: var(--primary-color);"></p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(13, 12)">&#9664; Voltar</button>
+                    <button class="btn" id="btn-prox-13" onclick="mudarPagina(13, 14)" disabled>Próxima Pista &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag14">
+            <div class="content-card">
+                <h2>&#128155; Nível 14: A Verdade do Meu Coração</h2>
+                <p style="font-size: 1.4em; color: var(--primary-color); font-family: 'Pacifico', cursive;">Anna, você é tudo. Minha **neném**, minha **bebezuda**, minha **gatinha**. Estarei aqui por você, sempre.</p>
+                <p>Obrigado por completar essa mega aventura e acertar tudo! 💖</p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(14, 13)">&#9664; Voltar</button>
+                    <button class="btn" onclick="mudarPagina(14, 15)">Ver a Surpresa Final! &#9654;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pag15">
+            <div class="content-card" style="border: 4px solid var(--primary-color);">
+                <h1>🎉 TESOURO MÁXIMO ENCONTRADO! 🎉</h1>
+                <p style="font-size: 1.6em; color: var(--secondary-color); font-weight: 700;">O prêmio de toda a aventura é o meu amor, que é todo seu, Anna. SEMPRE.</p>
+                <p>Feliz de ser seu Papai 1! 🐻💕</p>
+                <div class="nav-buttons">
+                    <button class="btn back" onclick="mudarPagina(15, 14)">&#9664; Última Releitura</button>
+                    <button class="btn interativo" onclick="compartilharMensagem()">Compartilhar a Vitória! 💖</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const totalPages = 15; 
+        let currentPage = 1;
+        const PABLO_ANIVERSARIO = "31/03/2005"; // Sua data de aniversário
+
+        // --- FUNÇÕES DE NAVEGAÇÃO E UX ---
+        function mudarPagina(atual, proxima) {
+            if (proxima < 1 || proxima > totalPages) return;
+            currentPage = proxima;
+            const container = document.getElementById("page-container");
+            const offset = (proxima - 1) * -100;
+            container.style.transform = `translateX(${offset}vw)`;
+            atualizarProgresso(proxima);
+        }
+
+        function atualizarProgresso(paginaAtual) {
+            const progresso = (paginaAtual / totalPages) * 100;
+            document.getElementById('progress-bar').style.width = progresso + '%';
+            document.getElementById('level-indicator').innerText = `Nível ${paginaAtual} / ${totalPages}`;
+        }
+
+        // --- FUNÇÕES DE INTERATIVIDADE (QUIZES) ---
+
+        // Nível 2: Perdão
+        function aceitarPerdao() {
+            document.getElementById('perdao-status').style.display = 'block';
+            document.getElementById('btn-perdao').disabled = true;
+            document.getElementById('btn-perdao').innerText = 'Perdão Aceito! ❤️';
+            document.getElementById('btn-prox-2').disabled = false;
+        }
+
+        // Níveis 6 e 7: Quiz de Escolha Múltipla
+        function responderQuizEscolha(respostaClicada, respostaCorreta, nivel) {
+            const statusElement = document.getElementById(`quiz-status-${nivel}`);
+            const proxBtn = document.getElementById(`btn-prox-${nivel}`);
+            
+            if (respostaClicada === respostaCorreta) {
+                statusElement.innerText = "Resposta Correta! Acertou! 🥳";
+                statusElement.style.color = 'var(--secondary-color)';
+                proxBtn.disabled = false;
+            } else {
+                statusElement.innerText = `Ops! Errou, tente novamente. Pense no que mais me vicia! 😉`;
+                statusElement.style.color = 'var(--primary-color)';
+                proxBtn.disabled = true;
+            }
+            statusElement.style.display = 'block';
+        }
+
+        // Nível 8: Lealdade
+        function responderLealdade(isCorrect, nivel) {
+            const statusElement = document.getElementById(`quiz-status-${nivel}`);
+            const proxBtn = document.getElementById(`btn-prox-${nivel}`);
+
+            if (isCorrect) {
+                statusElement.innerText = "Resposta Correta! O coração não mente! 🥰";
+                statusElement.style.color = 'var(--secondary-color)';
+                proxBtn.disabled = false;
+            } else {
+                statusElement.innerText = "Ops! Errou, sua não humana! 😉 (Escolha o Papai 1 para continuar a aventura!)";
+                statusElement.style.color = 'var(--primary-color)'; 
+                proxBtn.disabled = true;
+            }
+            statusElement.style.display = 'block';
+        }
+
+        // Nível 12: Aniversário (Dia)
+        function verificarDia(nivel) {
+            const input = document.getElementById('quiz-dia').value.trim();
+            const statusElement = document.getElementById(`quiz-status-${nivel}`);
+            const proxBtn = document.getElementById(`btn-prox-${nivel}`);
+            
+            const diaCorreto = PABLO_ANIVERSARIO.substring(0, 2); // Pega '31'
+
+            if (input === diaCorreto) {
+                statusElement.innerText = "Dia Encontrado! Quase lá! 🎈";
+                proxBtn.disabled = false;
+            } else {
+                statusElement.innerText = `Ops! Errou, tente novamente.`;
+                proxBtn.disabled = true;
+            }
+            statusElement.style.display = 'block';
+        }
+        
+        // Nível 13: Aniversário (Data Completa)
+        function verificarAniversario(nivel) {
+            const input = document.getElementById('quiz-aniversario').value.trim();
+            const statusElement = document.getElementById(`quiz-status-${nivel}`);
+            const proxBtn = document.getElementById(`btn-prox-${nivel}`);
+            
+            if (input === PABLO_ANIVERSARIO) {
+                statusElement.innerText = "CHAVE MESTRA ATIVADA! Você se lembra! Eu te amo! 🗝️💖";
+                statusElement.style.color = 'var(--secondary-color)';
+                proxBtn.disabled = false;
+            } else {
+                statusElement.innerText = `Ops! A data não está certa. A dica é ${PABLO_ANIVERSARIO.substring(0, 5)}... Tente o ano completo!`;
+                statusElement.style.color = 'var(--primary-color)';
+                proxBtn.disabled = true;
+            }
+            statusElement.style.display = 'block';
+        }
+
+        // Função de Compartilhamento
+        function compartilharMensagem() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'A Nossa Mega Aventurinha de Amor',
+                    text: 'O Pablo fez um jogo de 15 níveis épico só para a Anna! Eu completei! 💖',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert("Seu navegador não suporta compartilhamento nativo. Copie o link na barra de endereço para enviar este tesouro!");
+            }
+        }
+
+        // 6. Inicializa o código
+        window.onload = function() {
+            mudarPagina(1, 1);
+        }
+    </script>
+</body>
+</html>
